@@ -157,6 +157,7 @@ for epoch in range(Epoch):
         nn.utils.clip_grad_norm(net.parameters(),5)
         optimizer.step()
     print('Perplexity:{:.3f}'.format(np.exp(train_loss/len(train_generator))))
+#困惑度理解 https://blog.csdn.net/index20001/article/details/78884646
 
 net.eval()
 first=['黄河之水天上来','窗前明月光','山重水复疑无路','飞流直下三千尺']
