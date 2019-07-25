@@ -149,9 +149,9 @@ class RNN(nn.Module):
         out,(hn,cn)=self.lstm(x,(h0,c0))
         out=self.dropout_layer(out)
         out=torch.tanh(out)
-        #out.shape=bath,seqlen,hidden_size
+        #out.shape=batch,seqlen,hidden_size
         result=self.fc(out[:,-1,:])
-        #result.shape=bath,numclass
+        #result.shape=batch,numclass
         return result
 
 #train
