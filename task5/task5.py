@@ -73,6 +73,7 @@ class CustomDataset(data.Dataset):
         return self.datas.shape[0]
 
 class RNN(nn.Module):
+    #num_class 所有出现的词
     def __init__(self,emb_size,hidden_size,num_layers,dropout,num_class):
         super(RNN, self).__init__()
         self.emb_size=emb_size
@@ -107,16 +108,13 @@ class RNN(nn.Module):
 raw_data=load_data('poetryFromTang.txt')
 raw_data=raw_data.replace('\n','')
 raw_data=raw_data.replace('\ufeff','')
-raw_data=raw_data.replace('，','')
-raw_data=raw_data.replace('。','')
-raw_data=raw_data.replace('；','')
-tmp=''
-for char in raw_data:
-    tmp=tmp+char
-    tmp=tmp+' '
-char_list,char2num,tot_num,word_num_freq=dicts(tmp)
+raw_data=raw_data.replace('，',' ')
+raw_data=raw_data.replace('。',' ')
+raw_data=raw_data.replace('；',' ')
+raw_data=' '.join(raw_data.split())
+#需要把空格去掉，否则预测会间隔空格
+char_list,char2num,tot_num,word_num_freq=dicts(raw_data)
 word_freq=[]
-#print(word_num_freq)
 for i in range(word_num_freq.shape[0]):
     word_freq.append((char_list[i],word_num_freq[i]))
 word_freq.sort(key=lambda x:x[1],reverse=True)
@@ -124,13 +122,13 @@ word_freq.sort(key=lambda x:x[1],reverse=True)
 high_fre_word=[word_freq[i][0] for i in range(len(word_freq)) if word_freq[i][1]>1]
 high_fre=len(high_fre_word)
 
-corpus=tmp
+corpus=raw_data
 num_seq=len(corpus)//len_seq
 corpus=corpus[:num_seq*len_seq]
 
 dataset=np.zeros([num_seq,len_seq],dtype=np.int16)
 for i in range(num_seq):
-    dataset[i]=np.array([char2num[char] for char in tmp[i*len_seq:(i+1)*len_seq]])
+    dataset[i]=np.array([char2num[char] for char in raw_data[i*len_seq:(i+1)*len_seq]])
 #print(dataset)
 
 train_set=CustomDataset(dataset)
